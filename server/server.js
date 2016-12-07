@@ -7,15 +7,18 @@ import qs from 'qs'
 import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
-import webpackConfig from '../webpack.config'
+import webpackConfig from '../config/webpack.config'
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
+import { syncHistoryWithStore } from 'react-router-redux'
+import createMemoryHistory from 'history/lib/createMemoryHistory'
 
 import configureStore from '../common/store/configureStore'
-import App from '../common/containers/App'
 import { fetchCounter } from '../common/api/counter'
+import routes from '../common/router'
+import AppContainer from '../common/App'
 
 const app = new Express()
 const port = 3000
@@ -38,14 +41,27 @@ function handleRender(req, res) {
     // Compile an initial state
     const preloadedState = { counter }
 
+    // Creates an in-memory history object that does not interact with the
+    // browser URL (For server side rendering)
+    // https://github.com/reactjs/react-router/blob/master/docs/API.md#creatememoryhistoryoptions
+    const memoryHistory = createMemoryHistory(req.url)
+
     // Create a new Redux store instance
-    const store = configureStore(preloadedState)
+    const store = configureStore(preloadedState, memoryHistory)
+
+    // Create an enhanced history that syncs navigation events with the store
+    // https://github.com/reactjs/react-router-redux#tutorial
+    const history = syncHistoryWithStore(memoryHistory, store, {
+      selectLocationState: (state) => state.router
+    })
 
     // Render the component to a string
     const html = renderToString(
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <AppContainer
+        store={store}
+        routes={routes}
+        history={history}
+      />
     )
 
     // Grab the initial state from our Redux store
