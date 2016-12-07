@@ -1,6 +1,6 @@
 /* eslint-disable no-console, no-use-before-define */
 
-import path from 'path'
+import path from '../config/path'
 import Express from 'express'
 import qs from 'qs'
 
@@ -13,12 +13,15 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
+import { match } from 'react-router'
 import createMemoryHistory from 'history/lib/createMemoryHistory'
+import initialState from '../common/reducer/initialState'
 
 import configureStore from '../common/store/configureStore'
-import { fetchCounter } from '../common/api/counter'
 import routes from '../common/router'
 import AppContainer from '../common/App'
+import Meta from '../common/api/meta'
+import Helmet from 'react-helmet'
 
 const app = new Express()
 const port = 3000
@@ -33,13 +36,21 @@ app.use(handleRender)
 
 function handleRender(req, res) {
   // Query our mock API asynchronously
-  fetchCounter(apiResult => {
+  match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
+
+    if (error) {
+      res.status(500).send(error.message)
+    } else if (redirectLocation) {
+      res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+    } else if (!renderProps) {
+      return
+    }
+
     // Read the counter from the request, if provided
     const params = qs.parse(req.query)
-    const counter = parseInt(params.counter, 10) || apiResult || 0
+    const params2 = renderProps.params
 
-    // Compile an initial state
-    const preloadedState = { counter }
+    console.log('PARAMS', params, params2)
 
     // Creates an in-memory history object that does not interact with the
     // browser URL (For server side rendering)
@@ -47,7 +58,20 @@ function handleRender(req, res) {
     const memoryHistory = createMemoryHistory(req.url)
 
     // Create a new Redux store instance
-    const store = configureStore(preloadedState, memoryHistory)
+    const store = configureStore(initialState, memoryHistory)
+
+    /////////////////////////
+    /* Async data fetching */
+
+    // Get the component tree
+    const components = renderProps.components
+
+    // Extract our page component
+    const Comp = components[components.length - 1].WrappedComponent
+
+    // Extract `fetchData` if exists
+    const fetchData = (Comp && Comp.fetchData) || (() => Promise.resolve())
+    /////////////////////////
 
     // Create an enhanced history that syncs navigation events with the store
     // https://github.com/reactjs/react-router-redux#tutorial
@@ -55,39 +79,50 @@ function handleRender(req, res) {
       selectLocationState: (state) => state.router
     })
 
-    // Render the component to a string
-    const html = renderToString(
-      <AppContainer
-        store={store}
-        routes={routes}
-        history={history}
-      />
-    )
+    const { location } = renderProps
 
-    // Grab the initial state from our Redux store
-    const finalState = store.getState()
+    fetchData({ store, location, params, history })
+      .then(() => {
+        console.log('DATA FETCHED')
+        let head = Helmet.rewind()
+        head.title = Meta.title.get(location.pathname)
+        // Render the component to a string
+        const html = renderToString(
+          <AppContainer
+            store={store}
+            routes={routes}
+            history={history}
+          />
+        )
 
-    // Send the rendered page back to the client
-    res.send(renderFullPage(html, finalState))
+        // Grab the initial state from our Redux store
+        const finalState = store.getState()
+
+        // Send the rendered page back to the client
+        res.send(renderFullPage(html, head, finalState))
+      })
+      .catch((err) => {
+        console.log('ERROR!!', err)
+      })
   })
 }
 
-function renderFullPage(html, preloadedState) {
+function renderFullPage(html, head, initialState) {
   return `
     <!doctype html>
     <html>
       <head>
-        <title>Redux Universal Example</title>
+        <title>${head.title.toString()}</title>
       </head>
       <body>
         <div id="app">${html}</div>
         <script>
-          window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\x3c')}
+          window.__PRELOADED_STATE__ = ${JSON.stringify(initialState).replace(/</g, '\\x3c')}
         </script>
         <script src="/static/bundle.js"></script>
       </body>
     </html>
-    `
+  `
 }
 
 app.listen(port, (error) => {
