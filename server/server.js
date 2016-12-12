@@ -1,43 +1,20 @@
 /* eslint-disable no-console, no-use-before-define */
 
-import path from '../config/path'
-import Express from 'express'
 import qs from 'qs'
-
-import webpack from 'webpack'
-import webpackDevMiddleware from 'webpack-dev-middleware'
-import webpackHotMiddleware from 'webpack-hot-middleware'
-import webpackConfig from '../config/webpack.config'
-
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
 import { match } from 'react-router'
 import createMemoryHistory from 'history/lib/createMemoryHistory'
-import compression from 'compression'
 import initialState from '../common/reducer/initialState'
-
 import configureStore from '../common/store/configureStore'
 import routes from '../common/router'
 import AppContainer from '../common/App'
 import Meta from '../common/api/meta'
 import Helmet from 'react-helmet'
 
-const app = new Express()
-const port = 8080
-
-app.use(compression())
-
-// Use this middleware to set up hot module reloading via webpack.
-const compiler = webpack(webpackConfig)
-app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }))
-app.use(webpackHotMiddleware(compiler))
-
-// This is fired every time the server side receives a request
-app.use(handleRender)
-
-function handleRender(req, res) {
+const reactAppServer = (req, res) => {
   // Query our mock API asynchronously
   match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
 
@@ -125,10 +102,4 @@ function renderFullPage(html, head, initialState) {
   `
 }
 
-app.listen(port, (error) => {
-  if (error) {
-    console.error(error)
-  } else {
-    console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`)
-  }
-})
+export default reactAppServer

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "An example of a universally-rendered Redux application",
   "scripts": {
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "build": "node server/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
     "alertify-js": "0.3.12",
     "babel-polyfill": "^6.3.14",
     "babel-register": "^6.4.3",
+    "colors": "1.1.2",
     "compression": "1.6.2",
     "css-loader": "0.26.1",
     "express": "^4.13.3",
