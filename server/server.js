@@ -15,6 +15,7 @@ import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
 import { match } from 'react-router'
 import createMemoryHistory from 'history/lib/createMemoryHistory'
+import compression from 'compression'
 import initialState from '../common/reducer/initialState'
 
 import configureStore from '../common/store/configureStore'
@@ -24,7 +25,9 @@ import Meta from '../common/api/meta'
 import Helmet from 'react-helmet'
 
 const app = new Express()
-const port = 3000
+const port = 8080
+
+app.use(compression())
 
 // Use this middleware to set up hot module reloading via webpack.
 const compiler = webpack(webpackConfig)
@@ -49,8 +52,6 @@ function handleRender(req, res) {
     // Read the counter from the request, if provided
     const params = qs.parse(req.query)
     const params2 = renderProps.params
-
-    console.log('PARAMS', params, params2)
 
     // Creates an in-memory history object that does not interact with the
     // browser URL (For server side rendering)
@@ -83,9 +84,8 @@ function handleRender(req, res) {
 
     fetchData({ store, location, params, history })
       .then(() => {
-        console.log('DATA FETCHED')
         let head = Helmet.rewind()
-        head.title = Meta.title.get(location.pathname)
+        head.title = Meta.title.get(location.pathname) || ''
         // Render the component to a string
         const html = renderToString(
           <AppContainer

@@ -18,6 +18,7 @@
     "alertify-js": "0.3.12",
     "babel-polyfill": "^6.3.14",
     "babel-register": "^6.4.3",
+    "compression": "1.6.2",
     "css-loader": "0.26.1",
     "express": "^4.13.3",
     "qs": "^4.0.0",

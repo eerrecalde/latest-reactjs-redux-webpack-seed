@@ -25,20 +25,20 @@ module.exports = {
   asset: {
     index: join(root, 'index.html'),
     favicon: join(root, 'asset/favicon.png'),
-    static: join(__dirname, '../static'),
+    static: join(root, 'static'),
     entry: {
       client: join(root, 'client/index'),
       server: join(root, 'server/index'),
     },
   },
   output: {
-    asset: join(__dirname, '../dist/asset'),
+    asset: join(root, 'dist/asset'),
     index: join(
-      __dirname,
-      `../dist/${process.env.NODE_ENV === 'production' ? '' : '_'}index.html`
+      root,
+      `/dist/${process.env.NODE_ENV === 'production' ? '' : '_'}index.html`
     ),
-    path: join(__dirname, '../dist'),
-    server: join(__dirname, '../dist/server.js'),
+    path: join(root, 'dist'),
+    server: join(root, 'dist/server.js'),
     public: '/static/',
     getAssetPosixPath(subpath) {
       return posix.join('asset', subpath);
