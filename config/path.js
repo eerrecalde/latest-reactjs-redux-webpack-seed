@@ -1,34 +1,35 @@
 const { join, posix } = require('path');
 
 const root = join(__dirname, '../');
-const src = join(__dirname, '../src');
+const common = join(__dirname, '../common');
 
 module.exports = {
   root,
-  src,
+  common,
   nodeModules: join(__dirname, '../node_modules'),
   alias: {
     $vue: 'vue/dist/vue.common.js',
-    '@api': join(src, 'api'),
-    '@asset': join(src, 'asset'),
-    '@component': join(src, 'component'),
-    '@constant': join(src, 'constant'),
-    '@directive': join(src, 'directive'),
-    '@entry': join(src, 'entry'),
-    '@helper': join(src, 'helper'),
-    '@mixin': join(src, 'mixin'),
-    '@router': join(src, 'router'),
-    '@store': join(src, 'store'),
-    '@style': join(src, 'style'),
-    '@view': join(src, 'view'),
+    '@api': join(common, 'api'),
+    '@asset': join(common, 'asset'),
+    '@component': join(common, 'component'),
+    '@constant': join(common, 'constant'),
+    '@directive': join(common, 'directive'),
+    '@entry': join(common, 'entry'),
+    '@helper': join(common, 'helper'),
+    '@mixin': join(common, 'mixin'),
+    '@router': join(common, 'router'),
+    '@store': join(common, 'store'),
+    '@style': join(common, 'style'),
+    '@view': join(common, 'view'),
   },
   asset: {
     index: join(root, 'index.html'),
     favicon: join(root, 'asset/favicon.png'),
     static: join(root, 'static'),
+    client_info: join(root, 'dist/client_info.json'),
     entry: {
       client: join(root, 'client/index'),
-      server: join(root, 'server/index'),
+      server: join(root, 'server/server'),
     },
   },
   output: {
@@ -38,8 +39,8 @@ module.exports = {
       `/dist/${process.env.NODE_ENV === 'production' ? '' : '_'}index.html`
     ),
     path: join(root, 'dist'),
-    server: join(root, 'dist/server.js'),
-    public: '/static/',
+    server: join(root, 'dist/bundle.js'),
+    public: '/',
     getAssetPosixPath(subpath) {
       return posix.join('asset', subpath);
     },

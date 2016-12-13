@@ -4,20 +4,10 @@ import path from '../config/path'
 import reactApp from './server'
 import Express from 'express'
 import compression from 'compression'
-import fs from 'fs'
 import colors from 'colors'
 
-const app = new Express()
 const port = 8080
-
-try {
-  const bundle = fs.readFileSync(path.output.server);
-} catch (err) {
-  if (err.code !== 'ENOENT') throw err;
-  console.log('File not found. Did you build first?'.bgWhite.underline.red)
-  console.log('Please build first: npm run build'.bgWhite.black)
-  throw new Error('File not found');
-}
+const app = new Express()
 
 app.use(compression())
 

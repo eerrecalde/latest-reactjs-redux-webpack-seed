@@ -2,6 +2,7 @@
 
 import qs from 'qs'
 import React from 'react'
+import fs from 'fs-extra'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
@@ -13,6 +14,7 @@ import routes from '../common/router'
 import AppContainer from '../common/App'
 import Meta from '../common/api/meta'
 import Helmet from 'react-helmet'
+import path from '../config/path'
 
 const reactAppServer = (req, res) => {
   // Query our mock API asynchronously
@@ -24,6 +26,24 @@ const reactAppServer = (req, res) => {
       res.redirect(302, redirectLocation.pathname + redirectLocation.search)
     } else if (!renderProps) {
       return
+    }
+
+    let scripts
+    let styles
+    if (process.env.NODE_ENV === 'production') {
+      let clientInfo = fs.readJSONSync(path.asset.client_info)
+      const { main } = clientInfo.assetsByChunkName
+
+      scripts = [].concat(Array.isArray(main) ? main : [main])
+        .filter(asset => (/\.(js)$/i).test(asset))
+        .map((asset, i) => `<script key=${i} type="text/javascript" src=/${asset}></script>`)
+
+      styles = [].concat(Array.isArray(main) ? main : [main])
+        .filter(asset => (/\.(css)$/i).test(asset))
+        .map((asset, i) => `<link key=${i} rel="stylesheet" href="/${asset}" />`)
+    } else {
+      styles = '<link rel="stylesheet" href="/style.css" />'
+      scripts = '<script type="text/javascript" src="/bundle.js"></script>'
     }
 
     // Read the counter from the request, if provided
@@ -76,7 +96,7 @@ const reactAppServer = (req, res) => {
         const finalState = store.getState()
 
         // Send the rendered page back to the client
-        res.send(renderFullPage(html, head, finalState))
+        res.send(renderFullPage(html, head, finalState, scripts, styles))
       })
       .catch((err) => {
         console.log('ERROR!!', err)
@@ -84,7 +104,7 @@ const reactAppServer = (req, res) => {
   })
 }
 
-function renderFullPage(html, head, initialState) {
+function renderFullPage(html, head, initialState, scripts, styles) {
   return `
     <!doctype html>
     <html>
@@ -96,7 +116,7 @@ function renderFullPage(html, head, initialState) {
         <script>
           window.__PRELOADED_STATE__ = ${JSON.stringify(initialState).replace(/</g, '\\x3c')}
         </script>
-        <script src="/static/bundle.js"></script>
+        ${scripts}
       </body>
     </html>
   `
