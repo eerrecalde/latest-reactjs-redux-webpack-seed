@@ -10,8 +10,11 @@ test:
 dependencies:
   pre:
     - rm -Rf node_modules
+    - node -v
+    - npm -v
     - npm install
     - npm run build
+    - ls
 
 deployment:
   staging:
