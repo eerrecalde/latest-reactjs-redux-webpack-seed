@@ -71,4 +71,6 @@ cd ..
 
 rm -rf gh-pages-branch
 
+echo "8"
+
 echo "Finished Deployment!"
