@@ -16,8 +16,6 @@ deployment:
     branch: master
     commands:
       - npm run build
-      - git config --global user.email "eerrecalde@hotmail.com"
-      - git config --global user.name "Emiliano User Machine"
       - ./scripts/deploy-ghpages.sh dist
 
 machine:
