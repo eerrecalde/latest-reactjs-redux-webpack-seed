@@ -8,7 +8,6 @@ module.exports = {
   common,
   nodeModules: join(__dirname, '../node_modules'),
   alias: {
-    $vue: 'vue/dist/vue.common.js',
     '@api': join(common, 'api'),
     '@asset': join(common, 'asset'),
     '@component': join(common, 'component'),
@@ -23,9 +22,9 @@ module.exports = {
     '@view': join(common, 'view')
   },
   asset: {
-    index: join(root, 'index.html'),
-    favicon: join(root, 'asset/favicon.png'),
-    static: join(root, 'static'),
+    index: join(common, 'index.html'),
+    favicon: join(common, 'asset/favicon.png'),
+    static: join(common, 'static'),
     client_info: join(root, 'dist/client_info.json'),
     entry: {
       client: join(root, 'client/index'),
@@ -36,7 +35,7 @@ module.exports = {
     asset: join(root, 'dist/asset'),
     index: join(
       root,
-      `/dist/${process.env.NODE_ENV === 'production' ? '' : '_'}index.html`
+      `dist/${process.env.NODE_ENV === 'production' ? '' : '_'}index.html`
     ),
     path: join(root, 'dist'),
     server: join(root, 'dist/bundle.js'),

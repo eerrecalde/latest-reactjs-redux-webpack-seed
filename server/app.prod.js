@@ -1,4 +1,3 @@
-import webpack from 'webpack'
 import config from '../config/webpack.config'
 import path from '../config/path'
 import reactApp from './server'
