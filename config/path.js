@@ -20,7 +20,7 @@ module.exports = {
     '@router': join(common, 'router'),
     '@store': join(common, 'store'),
     '@style': join(common, 'style'),
-    '@view': join(common, 'view'),
+    '@view': join(common, 'view')
   },
   asset: {
     index: join(root, 'index.html'),
