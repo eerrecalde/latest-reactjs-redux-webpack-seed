@@ -25,5 +25,3 @@ deployment:
 machine:
   node:
     version: v7.0.0
-  npm:
-    versoin: 4.0.2
