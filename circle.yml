@@ -11,9 +11,10 @@ dependencies:
   pre:
     - rm -Rf node_modules
     - npm install
+    - npm run build
 
 deployment:
   staging:
     branch: master
     commands:
-      - ./scripts/deploy-ghpages.sh src
+      - ./scripts/deploy-ghpages.sh dist
