@@ -38,7 +38,7 @@ module.exports = {
       `dist/${process.env.NODE_ENV === 'production' ? '' : '_'}index.html`
     ),
     path: join(root, 'dist'),
-    server: join(root, 'dist/bundle.js'),
+    server: join(root, 'dist/server.js'),
     public: '/',
     getAssetPosixPath(subpath) {
       return posix.join('asset', subpath);

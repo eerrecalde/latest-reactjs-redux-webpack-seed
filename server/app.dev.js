@@ -1,7 +1,7 @@
 import webpack from 'webpack'
 import WebpackDevMiddleware from 'webpack-dev-middleware'
 import WebpackHotMiddleware from 'webpack-hot-middleware'
-import config from '../config/webpack.config'
+import config from '../config/webpack.client.dev'
 import reactAppServer from './server'
 import Express from 'express'
 
