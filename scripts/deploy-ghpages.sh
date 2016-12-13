@@ -17,15 +17,22 @@ then
     exit 1
 fi
 
+echo "1 ${siteSource}"
+
 # make a directory to put the gp-pages branch
 mkdir gh-pages-branch
 cd gh-pages-branch
+
+echo "2"
 
 # now lets setup a new repo so we can update the gh-pages branch
 git config --global user.email "$GH_EMAIL" > /dev/null 2>&1
 git config --global user.name "$GH_NAME" > /dev/null 2>&1
 git init
 git remote add --fetch origin "$remote"
+
+echo "3"
+echo git rev-parse --verify origin/gh-pages
 
 # switch into the the gh-pages branch
 if git rev-parse --verify origin/gh-pages > /dev/null 2>&1
@@ -38,17 +45,23 @@ else
     git checkout --orphan gh-pages
 fi
 
+echo "4"
+
 # copy over or recompile the new site
 cp -a "../${siteSource}/." .
 
 # stage any changes and new files
 git add -A
 
+echo "5"
+
 # now commit, ignoring branch gh-pages doesn't seem to work, so trying skip
 git commit --allow-empty -m "Deploy to GitHub pages [ci skip]"
 
 # and push, but send any output to /dev/null to hide anything sensitive
 git push --force --quiet origin gh-pages > /dev/null 2>&1
+
+echo "6"
 
 # go back to where we started and remove the gh-pages git repo we made and used
 # for deployment
