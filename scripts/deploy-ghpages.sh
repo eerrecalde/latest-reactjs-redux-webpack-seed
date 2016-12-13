@@ -58,10 +58,12 @@ echo "5"
 # now commit, ignoring branch gh-pages doesn't seem to work, so trying skip
 git commit --allow-empty -m "Deploy to GitHub pages [ci skip]"
 
+echo "6"
+
 # and push, but send any output to /dev/null to hide anything sensitive
 git push --force --quiet origin gh-pages > /dev/null 2>&1
 
-echo "6"
+echo "7"
 
 # go back to where we started and remove the gh-pages git repo we made and used
 # for deployment
