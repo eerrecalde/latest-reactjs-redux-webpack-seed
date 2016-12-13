@@ -13,7 +13,7 @@ dependencies:
 
 deployment:
   staging:
-    branch: master
+    branch: master2
     commands:
       - npm run build
       - ./scripts/deploy-ghpages.sh dist
