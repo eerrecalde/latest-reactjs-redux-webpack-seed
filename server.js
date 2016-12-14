@@ -35,7 +35,7 @@ module.exports =
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/latest-reactjs-redux-webpack-seed";
+/******/ 	__webpack_require__.p = "latest-reactjs-redux-webpack-seed";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
