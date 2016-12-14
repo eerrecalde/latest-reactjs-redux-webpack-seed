@@ -10,7 +10,7 @@ module.exports = {
   },
   output: {
     path: path.output.path,
-    publicPath: (process.env.NODE_ENV === 'gh') ? '/latest-reactjs-redux-webpack-seed' : path.output.public,
+    publicPath: (process.env.NODE_ENV === 'gh') ? 'latest-reactjs-redux-webpack-seed' : path.output.public,
     filename: '[name].js',
     chunkFilename: '[name].js',
   },
