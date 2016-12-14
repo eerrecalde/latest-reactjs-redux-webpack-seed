@@ -35,7 +35,7 @@ module.exports = {
     asset: join(root, 'dist/asset'),
     index: join(
       root,
-      `dist/${process.env.NODE_ENV === 'production' ? '' : '_'}index.html`
+      'dist/index.html'
     ),
     path: join(root, 'dist'),
     server: join(root, 'dist/server.js'),
