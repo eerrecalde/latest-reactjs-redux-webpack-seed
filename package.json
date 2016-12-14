@@ -6,7 +6,7 @@
     "start": "node server/index.js",
     "remove-dist": "node_modules/.bin/rimraf ./dist",
     "clean": "npm run remove-dist && mkdir dist",
-    "build:client": "NODE_ENV=production webpack --config ./config/webpack.client.prod.js --progress --hide-modules && cp -R ./static ./dist",
+    "build:client": "NODE_ENV=production webpack --config ./config/webpack.client.prod.js --progress --hide-modules",
     "build:server": "NODE_ENV=production webpack --config ./config/webpack.config.server.js --progress --hide-modules",
     "build": "npm run clean && npm run build:client && npm run build:server"
   },
