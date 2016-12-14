@@ -24005,7 +24005,7 @@ module.exports =
 	  },
 	  output: {
 	    asset: join(root, 'dist/asset'),
-	    index: join(root, 'dist/' + ( false ? '' : '_') + 'index.html'),
+	    index: join(root, 'dist/index.html'),
 	    path: join(root, 'dist'),
 	    server: join(root, 'dist/server.js'),
 	    public: '/',
