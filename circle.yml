@@ -1,7 +1,7 @@
 general:
   branches:
     ignore:
-      - gh-pages
+      - /^(?!master).*$/
 
 test:
   override:
@@ -15,7 +15,7 @@ deployment:
   staging:
     branch: master
     commands:
-      - npm run build-gh
+      - npm run build
       - ./scripts/deploy-ghpages.sh dist
 
 machine:
