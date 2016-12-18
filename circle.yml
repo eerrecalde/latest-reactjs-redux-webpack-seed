@@ -15,7 +15,7 @@ deployment:
   staging:
     branch: master
     commands:
-      - npm run build-gh
+      - npm run build
       - ./scripts/deploy-ghpages.sh dist
 
 machine:
