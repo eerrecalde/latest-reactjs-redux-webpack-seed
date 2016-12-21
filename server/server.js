@@ -3,7 +3,7 @@
 import qs from 'qs'
 import React from 'react'
 import fs from 'fs'
-import { renderToString } from 'react-dom/server'
+import { renderToString, renderToStaticMarkup } from 'react-dom/server'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
 import { match } from 'react-router'
@@ -15,6 +15,8 @@ import AppContainer from '../common/App'
 import Meta from '../common/api/meta'
 import Helmet from 'react-helmet'
 import path from '../config/path'
+
+const serialize = require('serialize-javascript')
 
 const reactAppServer = (req, res) => {
   // Query our mock API asynchronously
@@ -78,9 +80,32 @@ const reactAppServer = (req, res) => {
 
         // Grab the initial state from our Redux store
         const finalState = store.getState()
+        const context = { url: req.url }
+        const appStartIndex = template.indexOf('<main id=app></main>')
+
+        res.setHeader('Content-Type', 'text/html')
+        res.setHeader('Cache-Control', 'no-cache')
+        let tpl = template.slice(0, appStartIndex)
+        res.write(template.slice(0, appStartIndex))
+        res.write(
+          `<script>window.__INITIAL_STATE__=${
+            serialize(context.state, { isJSON: true })
+          }</script>`
+        )
+        tpl += `<script>window.__INITIAL_STATE__=${
+          serialize(context.state, { isJSON: true })
+        }</script>`
+
+        tpl += `<div id="app">${html}</div>`
+        tpl += template.slice(appStartIndex + '<main id=app></main>'.length)
+
+        res.write(`<div id="app">${html}</div>`)
+        res.end(`</body></html>`)
+
+        // const HTML = renderToStaticMarkup(template)
 
         // Send the rendered page back to the client
-        res.end(template)
+        res.status(200)
       })
       .catch((err) => {
         console.log('ERROR!!', err)
