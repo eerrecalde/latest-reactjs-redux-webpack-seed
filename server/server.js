@@ -2,7 +2,7 @@
 
 import qs from 'qs'
 import React from 'react'
-import fs from 'fs-extra'
+import fs from 'fs'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
@@ -28,23 +28,7 @@ const reactAppServer = (req, res) => {
       return
     }
 
-    let scripts
-    let styles
-    if (process.env.NODE_ENV === 'production') {
-      let clientInfo = fs.readJSONSync(path.asset.client_info)
-      const { main } = clientInfo.assetsByChunkName
-
-      scripts = [].concat(Array.isArray(main) ? main : [main])
-        .filter(asset => (/\.(js)$/i).test(asset))
-        .map((asset, i) => `<script key=${i} type="text/javascript" src=/${asset}></script>`)
-
-      styles = [].concat(Array.isArray(main) ? main : [main])
-        .filter(asset => (/\.(css)$/i).test(asset))
-        .map((asset, i) => `<link key=${i} rel="stylesheet" href="/${asset}" />`)
-    } else {
-      styles = '<link rel="stylesheet" href="/style.css" />'
-      scripts = '<script type="text/javascript" src="/bundle.js"></script>'
-    }
+    let template = fs.readFileSync(path.output.index, 'utf8')
 
     // Read the counter from the request, if provided
     const params = qs.parse(req.query)
@@ -96,7 +80,7 @@ const reactAppServer = (req, res) => {
         const finalState = store.getState()
 
         // Send the rendered page back to the client
-        res.send(renderFullPage(html, head, finalState, scripts, styles))
+        res.end(template)
       })
       .catch((err) => {
         console.log('ERROR!!', err)

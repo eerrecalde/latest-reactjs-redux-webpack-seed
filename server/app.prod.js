@@ -10,7 +10,7 @@ const app = new Express()
 
 app.use(compression())
 
-app.use(Express.static(config.output.path))
+app.use(Express.static(path.output.path))
 
 app.use(reactApp)
 

@@ -8,7 +8,10 @@
     "clean": "npm run remove-dist && mkdir dist",
     "build:client": "NODE_ENV=production webpack --config ./config/webpack.client.prod.js --progress --hide-modules && cp -R ./static ./dist",
     "build:server": "NODE_ENV=production webpack --config ./config/webpack.config.server.js --progress --hide-modules",
-    "build": "npm run clean && npm run build:client && npm run build:server"
+    "build": "npm run clean && npm run build:client && npm run build:server",
+    "gh-build:client": "NODE_ENV=gh webpack --config ./config/webpack.client.prod.js --progress --hide-modules && cp -R ./static ./dist",
+    "gh-build:server": "NODE_ENV=gh webpack --config ./config/webpack.config.server.js --progress --hide-modules",
+    "gh-build": "npm run clean && npm run gh-build:client && npm run gh-build:server"
   },
   "repository": {
     "type": "git",
@@ -30,7 +33,6 @@
     "css-loader": "0.26.1",
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "1.0.1",
-    "fs-extra": "1.0.0",
     "qs": "^4.0.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
