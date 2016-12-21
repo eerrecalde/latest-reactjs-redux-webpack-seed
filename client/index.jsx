@@ -13,7 +13,7 @@ const preloadedState = window.__PRELOADED_STATE__
 //const store = configureStore(preloadedState)
 const rootElement = document.getElementById('app')
 
-const basename = (process.env.NODE_ENV && process.env.NODE_ENV === 'production') ?
+const basename = (process.env.NODE_ENV && process.env.NODE_ENV === 'gh') ?
   '/latest-reactjs-redux-webpack-seed' : ''
 
 // ========================================================
