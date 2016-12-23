@@ -9,20 +9,18 @@ import configureStore from '../common/store/configureStore'
 import AppContainer from '../common/App'
 import routes from '../common/router'
 
-console.log('CLIENT', routes)
-
 const preloadedState = window.__PRELOADED_STATE__
 //const store = configureStore(preloadedState)
 const rootElement = document.getElementById('app')
 
 const basename = (process.env.NODE_ENV && process.env.NODE_ENV === 'gh') ?
-  '/latest-reactjs-redux-webpack-seed' : ''
+  '/latest-reactjs-redux-webpack-seed' : '/'
 
 // ========================================================
 // Browser History Setup
 // ========================================================
 const browserHistory = useRouterHistory(createBrowserHistory)({
-  basename: '/'
+  basename: basename
 })
 
 // ========================================================
@@ -37,7 +35,6 @@ const store = configureStore(preloadedState, browserHistory)
 const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: (state) => state.router
 })
-
 
 render(
   <AppContainer

@@ -1,23 +1,5 @@
-import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import rootReducer from '../reducer'
-
-const configureStore = (preloadedState) => {
-  const store = createStore(
-    rootReducer,
-    preloadedState,
-    applyMiddleware(thunk)
-  )
-
-  if (module.hot) {
-    // Enable Webpack hot module replacement for reducers
-    module.hot.accept('../reducer', () => {
-      const nextRootReducer = require('../reducer').default
-      store.replaceReducer(nextRootReducer)
-    })
-  }
-
-  return store
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'gh') {
+  module.exports = require('./configureStore.prod')
+} else {
+  module.exports = require('./configureStore.dev')
 }
-
-export default configureStore

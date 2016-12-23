@@ -7,6 +7,11 @@ const path = require('./path')
 module.exports = merge(webpackBaseConfig, {
   // eval-source-map is faster for development
   devtool: '#eval-source-map',
+  output: {
+    path: path.output.path,
+    publicPath: '/',
+    filename: 'main.js',
+  },
   debug: true,
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),

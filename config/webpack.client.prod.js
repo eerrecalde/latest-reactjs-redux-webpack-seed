@@ -14,6 +14,7 @@ module.exports = merge(webpackBaseConfig, {
   // Use output names for long term asset caching
   output: {
     path: path.output.path,
+    publicPath: '/',
     filename: path.output.getAssetPosixPath('js/[name].[chunkhash].js'),
     chunkFilename: path.output.getAssetPosixPath('js/[name].[chunkhash].js'),
   },

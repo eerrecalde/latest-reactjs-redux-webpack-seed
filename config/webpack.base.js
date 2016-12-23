@@ -1,19 +1,13 @@
 const path = require('./path')
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 
-const filename = (process.env.NODE_ENV === 'production') ? '[name].[contenthash].css' : 'style.css'
+const filename = (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'gh') ? path.output.getAssetPosixPath('css/[name].[contenthash].css') : 'styles.css'
 module.exports = {
   entry: [
     path.asset.entry.client
   ],
   node: {
     fs: "empty"
-  },
-  output: {
-    path: path.output.path,
-    publicPath: '',
-    filename: '[name].js',
-    chunkFilename: '[name].js',
   },
   resolve: {
     // Extensions to support if excluded from path
@@ -46,6 +40,10 @@ module.exports = {
         }
       },
       {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract("css"),
+      },
+      {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract("css!sass"),
       },
@@ -70,6 +68,6 @@ module.exports = {
   },
   plugins: [
     // extract css into its own file
-    new ExtractTextPlugin(path.output.getAssetPosixPath('css/[name].[contenthash].css')),
+    new ExtractTextPlugin(filename),
   ],
 }

@@ -24,9 +24,9 @@ export class ManageCoursePage extends Component {
   }
 
   componentDidMount () {
-    // require('../../../node_modules/alertify-js/themes/alertify.core.css')
-    // require('../../../node_modules/alertify-js/themes/alertify.default.css')
-    // alertify = require('alertify-js')
+    require('../../../node_modules/alertify-js/themes/alertify.core.css')
+    require('../../../node_modules/alertify-js/themes/alertify.default.css')
+    alertify = require('alertify-js')
     if (!this.props.authors.length) {
       this.props.actions.loadAuthors()
     }
@@ -70,14 +70,14 @@ export class ManageCoursePage extends Component {
     this.props.actions.saveCourse(this.state.course)
       .then(() => this.redirect('/courses'))
       .catch((error) => {
-        // alertify.error(error)
+        alertify.error(error)
         this.setState({saving: false})
       })
   }
 
   redirect (newPage) {
     this.setState({saving: false})
-    // alertify.success('Course saved')
+    alertify.success('Course saved')
     this.context.router.push(newPage)
   }
 

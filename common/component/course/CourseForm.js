@@ -13,7 +13,7 @@ const CourseForm = ({course, allAuthors, onSave, onChange, saving, errors}) => {
 
       <TextInput
         hidden
-        readOnly
+        onChange={onChange}
         name="id"
         label="id"
         value={course.id} />

@@ -68,7 +68,7 @@ const reactAppServer = (req, res) => {
     const { location } = renderProps
 
     // If there are params, try to update the list of items before rendering.
-    if (params && params.id) {
+    if (params && params.id && req.url.indexOf('courses') > -1) {
       updateData({ store, params})
       .catch((err) => {
         console.log('ERROR!!', err)
@@ -99,7 +99,19 @@ const reactAppServer = (req, res) => {
         res.setHeader('Content-Type', 'text/html')
         res.setHeader('Cache-Control', 'no-cache')
 
-        console.log('PRODUCTION SITE', html)
+        ////// Only Client side part End //
+        if (!process.env.NODE_ENV || (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'gh')) {
+          console.log('DEVELOPMENT SITE')
+          const styles = '<link rel="stylesheet" href="/styles.css" />'
+          const scripts = '<script type="text/javascript" src="/main.js"></script>'
+          res.send(renderFullPage(html, head, finalState, scripts, styles))
+          return
+        }
+        ////// Only Client side part End //
+
+
+        ////// Only Server Side part Start //
+        console.log('PRODUCTION SITE')
 
         const appStartIndex = template.indexOf('<main id=app></main>')
 
@@ -123,11 +135,31 @@ const reactAppServer = (req, res) => {
 
         // Send the rendered page back to the client
         res.status(200)
+        ////// Only Server Side part End //
       })
       .catch((err) => {
         console.log('ERROR!!', err)
       })
   })
+}
+
+function renderFullPage(html, head, initialState, scripts = '', styles = '') {
+  return `
+    <!doctype html>
+    <html>
+      <head>
+        <title>${head.title.toString()}</title>
+        ${styles}
+      </head>
+      <body>
+        <div id="app">${html}</div>
+        <script>
+          window.__PRELOADED_STATE__ = ${JSON.stringify(initialState).replace(/</g, '\\x3c')}
+        </script>
+        ${scripts}
+      </body>
+    </html>
+  `
 }
 
 export default reactAppServer
