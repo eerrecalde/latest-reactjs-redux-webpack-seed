@@ -1,13 +1,13 @@
 import React, {PropTypes} from 'react'
 
-const TextInput = ({name, label, onChange, placeholder, value, error}) => {
+const TextInput = ({hidden, name, label, onChange, placeholder, value, error}) => {
   let wrapperClass = 'form-group'
   if (error && error.length) {
     wrapperClass += " " + 'has-error'
   }
 
   return (
-    <div className={wrapperClass}>
+    <div className={wrapperClass} data-tt={hidden} style={{display: (!hidden) ? 'block' : 'none'}}>
       <label htmlFor={name}>{label}</label>
       <div className="field">
         <input
@@ -26,6 +26,7 @@ const TextInput = ({name, label, onChange, placeholder, value, error}) => {
 }
 
 TextInput.propTypes = {
+  hidden: PropTypes.bool,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,

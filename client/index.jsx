@@ -9,6 +9,8 @@ import configureStore from '../common/store/configureStore'
 import AppContainer from '../common/App'
 import routes from '../common/router'
 
+console.log('CLIENT', routes)
+
 const preloadedState = window.__PRELOADED_STATE__
 //const store = configureStore(preloadedState)
 const rootElement = document.getElementById('app')
@@ -19,9 +21,8 @@ const basename = (process.env.NODE_ENV && process.env.NODE_ENV === 'gh') ?
 // ========================================================
 // Browser History Setup
 // ========================================================
-console.log('BROWSER HISTORY!!!', basename)
 const browserHistory = useRouterHistory(createBrowserHistory)({
-  basename: basename
+  basename: '/'
 })
 
 // ========================================================

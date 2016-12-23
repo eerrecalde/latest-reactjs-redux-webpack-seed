@@ -10,7 +10,7 @@ export default {
       let title
 
       if (l.indexOf('/course/') > -1) {
-        return this.titles['/course']
+        return this.titles['/course/']
       }
 
       return (this.titles[l]) ? this.titles[l] : this.titles['/home']

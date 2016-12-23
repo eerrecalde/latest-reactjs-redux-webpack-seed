@@ -1,0 +1,21 @@
+/**
+* Adds white to the provided colour
+* Params
+* 1. $i: Position within the colour pallet.
+* 2. $qty: Amount of colours in pallet.
+* 2. $color: colour to be mixed with the white colour.
+*/
+@function lighten-color($i, $qty, $color) {
+  @return mix($color, white, 100 - ($i / $qty * 100));
+}
+
+/**
+* Adds black to the provided colour
+* Params
+* 1. $i: Position within the colour pallet.
+* 2. $qty: Amount of colours in pallet.
+* 2. $color: colour to be mixed with the black colour.
+*/
+@function darken-color($i, $qty, $color) {
+  @return mix($color, black, 100 - ($i / $qty * 100));
+}

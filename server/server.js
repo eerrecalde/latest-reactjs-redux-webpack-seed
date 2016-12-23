@@ -22,6 +22,7 @@ const reactAppServer = (req, res) => {
   // Query our mock API asynchronously
   match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
 
+    // Make sure there are no errors or missing components before moving forward.
     if (error) {
       res.status(500).send(error.message)
     } else if (redirectLocation) {
@@ -30,11 +31,11 @@ const reactAppServer = (req, res) => {
       return
     }
 
-    let template = fs.readFileSync(path.output.index, 'utf8')
+    // Get Html template "index.html" located in dist folder
+    const template = fs.readFileSync(path.output.index, 'utf8')
 
     // Read the counter from the request, if provided
     const params = qs.parse(req.query)
-    const params2 = renderProps.params
 
     // Creates an in-memory history object that does not interact with the
     // browser URL (For server side rendering)
@@ -55,6 +56,7 @@ const reactAppServer = (req, res) => {
 
     // Extract `fetchData` if exists
     const fetchData = (Comp && Comp.fetchData) || (() => Promise.resolve())
+    const updateData = (Comp && Comp.updateData) || (() => Promise.resolve())
     /////////////////////////
 
     // Create an enhanced history that syncs navigation events with the store
@@ -65,10 +67,25 @@ const reactAppServer = (req, res) => {
 
     const { location } = renderProps
 
+    // If there are params, try to update the list of items before rendering.
+    if (params && params.id) {
+      updateData({ store, params})
+      .catch((err) => {
+        console.log('ERROR!!', err)
+      })
+    }
+
+    // Fetch the list of items
     fetchData({ store, location, params, history })
       .then(() => {
+
+        // Grab the initial state from our Redux store
+        const finalState = store.getState()
+
+        // Get the title
         let head = Helmet.rewind()
         head.title = Meta.title.get(location.pathname) || ''
+
         // Render the component to a string
         const html = renderToString(
           <AppContainer
@@ -78,27 +95,27 @@ const reactAppServer = (req, res) => {
           />
         )
 
-        // Grab the initial state from our Redux store
-        const finalState = store.getState()
-        const context = { url: req.url }
-        const appStartIndex = template.indexOf('<main id=app></main>')
-
+        // Set up headers
         res.setHeader('Content-Type', 'text/html')
         res.setHeader('Cache-Control', 'no-cache')
-        let tpl = template.slice(0, appStartIndex)
-        res.write(template.slice(0, appStartIndex))
+
+        console.log('PRODUCTION SITE', html)
+
+        const appStartIndex = template.indexOf('<main id=app></main>')
+
+        // Write down the first part of the template included the title
+        res.write(`<!DOCTYPE HTML><html lang=en><head><title>${head.title}</title>`)
+
+        res.write(template.slice(template.indexOf('</title>') + '</title>'.length, appStartIndex))
+
+        // And add the preloaded state.
         res.write(
-          `<script>window.__INITIAL_STATE__=${
-            serialize(context.state, { isJSON: true })
-          }</script>`
+          `<script>
+            window.__PRELOADED_STATE__ = ${JSON.stringify(finalState).replace(/</g, '\\x3c')}
+          </script>`
         )
-        tpl += `<script>window.__INITIAL_STATE__=${
-          serialize(context.state, { isJSON: true })
-        }</script>`
 
-        tpl += `<div id="app">${html}</div>`
-        tpl += template.slice(appStartIndex + '<main id=app></main>'.length)
-
+        //
         res.write(`<div id="app">${html}</div>`)
         res.end(`</body></html>`)
 
@@ -111,24 +128,6 @@ const reactAppServer = (req, res) => {
         console.log('ERROR!!', err)
       })
   })
-}
-
-function renderFullPage(html, head, initialState, scripts, styles) {
-  return `
-    <!doctype html>
-    <html>
-      <head>
-        <title>${head.title.toString()}</title>
-      </head>
-      <body>
-        <div id="app">${html}</div>
-        <script>
-          window.__PRELOADED_STATE__ = ${JSON.stringify(initialState).replace(/</g, '\\x3c')}
-        </script>
-        ${scripts}
-      </body>
-    </html>
-  `
 }
 
 export default reactAppServer

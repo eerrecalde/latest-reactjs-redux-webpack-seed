@@ -1,11 +1,10 @@
-// @import '../../styles/settings/colours';
 .row {
   &__link {
     text-decoration: none;
-    color: color('plum-shade', '90');
+    color: rgba(0,100,255,1);
 
     &--secondary {
-      color: color('plum-shade', '60');
+      color: rgba(0,255,100,1);
     }
   }
 }

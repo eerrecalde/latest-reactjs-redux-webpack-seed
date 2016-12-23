@@ -50,8 +50,12 @@ CoursesPage.propTypes = {
   actions: PropTypes.object.isRequired
 }
 
-CoursesPage.fetchData = ({ store }) => {
-  return store.dispatch(courseActions.loadCourses())
+CoursesPage.fetchData = (obj) => {
+  return obj.store.dispatch(courseActions.loadCourses())
+}
+
+CoursesPage.updateData = (obj) => {
+  return obj.store.dispatch(courseActions.saveCourse(obj.params))
 }
 
 function mapStateToProps (state, ownProps) {

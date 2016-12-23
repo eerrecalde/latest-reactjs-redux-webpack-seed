@@ -56,6 +56,7 @@ const generateId = (course) => {
 }
 
 class CourseApi {
+
   static getAllCourses () {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -102,6 +103,7 @@ class CourseApi {
       }, delay)
     })
   }
+
 }
 
 export default CourseApi

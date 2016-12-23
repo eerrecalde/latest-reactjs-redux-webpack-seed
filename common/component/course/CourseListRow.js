@@ -1,6 +1,10 @@
 import React, {PropTypes} from 'react'
 import {Link} from 'react-router'
-// import './CourseListRow.scss'
+
+if (process.env.BROWSER) {
+  console.log('BROWSER!!')
+  require('./CourseListRow.scss')
+}
 
 const CourseListRow = (props) => {
   return (

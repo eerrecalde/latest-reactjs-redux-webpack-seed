@@ -13,12 +13,18 @@ module.exports = merge(webpackBaseConfig, {
   devtool: '#source-map',
   // Use output names for long term asset caching
   output: {
+    path: path.output.path,
     filename: path.output.getAssetPosixPath('js/[name].[chunkhash].js'),
     chunkFilename: path.output.getAssetPosixPath('js/[name].[chunkhash].js'),
   },
   plugins: [
     // https://webpack.github.io/docs/list-of-plugins.html
-    new webpack.DefinePlugin({ 'process.env': env.server }),
+    new webpack.DefinePlugin({
+      "process.env": {
+        BROWSER: JSON.stringify(true),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+      },
+    }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     // extract css into its own file

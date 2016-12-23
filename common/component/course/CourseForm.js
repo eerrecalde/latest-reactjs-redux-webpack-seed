@@ -5,11 +5,20 @@ import Helmet from "react-helmet"
 
 const CourseForm = ({course, allAuthors, onSave, onChange, saving, errors}) => {
   return (
-    <form>
+    <form action="/courses/" method="get">
       <Helmet
         title="Starter kit | Course"
       />
       <h1>Manage Course</h1>
+
+      <TextInput
+        hidden
+        readOnly
+        name="id"
+        label="id"
+        value={course.id} />
+
+
       <TextInput
         name="title"
         label="Title"
